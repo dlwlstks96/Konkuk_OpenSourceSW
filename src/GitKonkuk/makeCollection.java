@@ -21,25 +21,21 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
-
-public class Week02 {
-
-	@SuppressWarnings("unused")
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
-		String dir = "C:\\Users\\s_dlwlstks96\\Desktop\\자바\\simpleIR\\data";
+public class makeCollection {
+	
+	String sLine = null;
+	String[] title = new String[10000];
+	String[][] body = new String[10000][10000];
+	int titleCnt = 0;
+	int bodyCnt1 = 0;
+	int bodyCnt2 = 0;
+	
+	public void readHtmlFile() {
+		//String dir = "C:\\Users\\s_dlwlstks96\\Desktop\\자바\\simpleIR\\data";
+		String dir = "..\\data";
 
 		File f = new File(dir);
 		File[] items = f.listFiles();
-		
-		String sLine = null;
-		String[] title = new String[10000];
-		String[][] body = new String[10000][10000];
-		int titleCnt = 0;
-		int bodyCnt1 = 0;
-		int bodyCnt2 = 0;
 		
 		for(File file : items) {
 			try {
@@ -69,7 +65,9 @@ public class Week02 {
 				e.printStackTrace();
 			}
 		}
-		
+	}
+	
+	public void makeXmlFile() {
 		int xmlCnt = 0;
 		
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -108,7 +106,7 @@ public class Week02 {
 				
 				DOMSource source = new DOMSource(doc);
 				try {
-					StreamResult result = new StreamResult(new FileOutputStream(new File("src/collection.xml")));
+					StreamResult result = new StreamResult(new FileOutputStream(new File("C:\\Users\\s_dlwlstks96\\Desktop\\자바\\simpleIR\\src/collection.xml")));
 					
 					try {
 						transformer.transform(source, result);
@@ -125,5 +123,6 @@ public class Week02 {
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
-}
+	}
+
 }

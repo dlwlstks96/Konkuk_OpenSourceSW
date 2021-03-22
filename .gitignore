@@ -17,9 +17,11 @@ local.properties
 
 # Folder
 week02/
+data/
 
 # File
 src/collection.xml
+src/index.xml
 
 # Eclipse Core
 .project

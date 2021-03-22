@@ -18,58 +18,73 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.snu.ids.kkma.index.Keyword;
+import org.snu.ids.kkma.index.KeywordExtractor;
+import org.snu.ids.kkma.index.KeywordList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
-
-public class Week02 {
-
-	@SuppressWarnings("unused")
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+public class makeKeyword {
+	
+	String sLine = null;
+	String collectXml = null;
+	String[] title = new String[10000];
+	String[] body = new String[10000];
+	int titleCnt = 0;
+	int bodyCnt = 0;
+	
+	void kkmaKeyword() {
 		
-		String dir = "C:\\Users\\s_dlwlstks96\\Desktop\\자바\\simpleIR\\data";
-
+		//String dir = "C:\\Users\\s_dlwlstks96\\Desktop\\자바\\simpleIR\\src\\collection.xml";
+		String dir = ".\\collection.xml";
 		File f = new File(dir);
-		File[] items = f.listFiles();
-		
-		String sLine = null;
-		String[] title = new String[10000];
-		String[][] body = new String[10000][10000];
-		int titleCnt = 0;
-		int bodyCnt1 = 0;
-		int bodyCnt2 = 0;
-		
-		for(File file : items) {
+		try {
+			BufferedReader inFile = new BufferedReader(new FileReader(f));
 			try {
-				BufferedReader inFile = new BufferedReader(new FileReader(file));
-				try {
-					while((sLine = inFile.readLine())!=null) {
-						if(sLine.contains("<title>")) {
-							sLine = sLine.replace("<title>", "");
-							sLine = sLine.replace("</title>", "");
-							title[titleCnt] = sLine;
-							titleCnt++;
-						}else if(sLine.contains("<p>")) {
-							sLine = sLine.replace("<p>", "");
-							sLine = sLine.replace("</p>", "");
-							body[bodyCnt1][bodyCnt2] = sLine;
-							bodyCnt2++;
-						}
-						if(sLine.contains("</div>")) {
-							bodyCnt1++;
-							bodyCnt2 = 0;
-						}
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
+				while((sLine = inFile.readLine())!=null) {
+					collectXml = sLine;
 				}
-			} catch (FileNotFoundException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		KeywordExtractor ke = new KeywordExtractor();
+		
+		
+		String[] tmp = collectXml.split("body"); //1,3,5,7,9
+		
+		for(int i=0; i<tmp.length; i+=2) {
+			if(!(tmp[i]==null)) {
+				if(tmp[i].contains("<title>")) {
+					int findTitleIndex = tmp[i].indexOf("<title>");
+					int findTitleIndex2 = tmp[i].indexOf("</title>");
+					
+					title[titleCnt] = tmp[i].substring(findTitleIndex + 11, findTitleIndex2);
+					titleCnt++;
+				}			
 			}
 		}
 		
+		KeywordList kl = null;
+		for(int i = 1; i<tmp.length; i+=2) {
+			kl = ke.extractKeyword(tmp[i], true);
+			
+			for(int j = 0; j < kl.size(); j++) {
+				Keyword kwrd = kl.get(j);
+				if(j!=0) {
+					body[bodyCnt] = body[bodyCnt] + kwrd.getString() + ":" + kwrd.getCnt() + "#";
+				}else if(j==0) {
+					body[bodyCnt] = kwrd.getString() + ":" + kwrd.getCnt() + "#";	
+				}
+			}
+			bodyCnt++;
+		}
+	}
+	
+	public void makeXmlFile() {
 		int xmlCnt = 0;
 		
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -95,9 +110,8 @@ public class Week02 {
 				eleDoc.appendChild(eleBody);
 				
 				
-				for (int a = 0; !(body[i][a] == null); a++) {
-					eleBody.appendChild(doc.createTextNode(body[i][a]));
-				}
+				eleBody.appendChild(doc.createTextNode(body[i]));
+				
 			}
 			
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -108,7 +122,7 @@ public class Week02 {
 				
 				DOMSource source = new DOMSource(doc);
 				try {
-					StreamResult result = new StreamResult(new FileOutputStream(new File("src/collection.xml")));
+					StreamResult result = new StreamResult(new FileOutputStream(new File("C:\\Users\\s_dlwlstks96\\Desktop\\자바\\simpleIR\\src\\index.xml")));
 					
 					try {
 						transformer.transform(source, result);
@@ -125,5 +139,7 @@ public class Week02 {
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		}
-}
+	}
+	
+	
 }
