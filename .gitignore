@@ -22,6 +22,7 @@ data/
 # File
 src/collection.xml
 src/index.xml
+src/index.post
 
 # Eclipse Core
 .project

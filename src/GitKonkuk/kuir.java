@@ -15,6 +15,9 @@ public class kuir {
 				makeKeyword keyword = new makeKeyword();
 				keyword.kkmaKeyword();
 				keyword.makeXmlFile();
+			}else if(args[0].compareTo("-i")==0) {
+				makeIndex index = new makeIndex();
+				index.makeIndexPost(args[1]);
 			}
 		}
 
