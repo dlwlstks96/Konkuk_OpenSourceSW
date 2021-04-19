@@ -16,6 +16,7 @@ import org.snu.ids.kkma.index.KeywordExtractor;
 import org.snu.ids.kkma.index.KeywordList;
 
 public class searcher {
+<<<<<<< HEAD
    
    String[] kwrdList = new String[1000];
    int queryCnt = 0;
@@ -78,8 +79,8 @@ public class searcher {
       CalcSim();
       
    }
-   
-   public void CalcSim() {
+
+   public void InnerProduct(){
       for(int i=0; i<kwrdList.length; i++) {
          if(kwrdList[i]!=null) {
             for(int j=0; j<keyList.length; j++) {
@@ -95,10 +96,17 @@ public class searcher {
             }   
          }
       }
-      
+
       for(int i=0; i<querySim.length; i++) {
          System.out.println(querySim[i]);   
       }
+   }
+
+   
+   
+   public void CalcSim() {
+
+      InnerProduct();
       
       System.out.println("\n=======6주차 실습 출력 결과========");
 
@@ -122,14 +130,7 @@ public class searcher {
       for(int i=0; i<5; i++) {
           cosineSim[i] = (querySim[i])/(2*Math.sqrt(doubleArr[i]));
       }
-      
-      System.out.println(cosineSim[0]);
-      System.out.println(cosineSim[1]);
-      System.out.println(cosineSim[2]);
-      System.out.println(cosineSim[3]);
-      System.out.println(cosineSim[4]);
 
-      
       printResult2();
       
       
